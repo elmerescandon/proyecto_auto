@@ -1,0 +1,103 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+from __future__ import print_function
+import rospy
+import numpy as np
+from geometry_msgs.msg import PoseStamped
+from hector_uav_msgs.msg import PoseActionGoal
+import functions as num
+from std_msgs.msg import Float32MultiArray
+
+
+
+
+# ==================================
+# Clase Desplazamiento hacia objeto
+# ==================================
+class Suscriptor_Displacement_to_object():
+	def __init__(self):
+		self.pose_displaced = [0,0,0]
+		self.p_trasl = np.array([0,0,0])
+		# Tópico para recibir la media del grupo de píxeles del objeto
+		topic_sub = '/pose_object_follow'
+		subpix = rospy.Subscriber(topic_sub,Float32MultiArray,self.callback_displace)
+	def callback_displace(self,msg):
+		self.pose_displaced = msg.data
+	def get_displacement(self):
+		self.p_trasl = np.array(self.pose_displaced)
+		return self.p_trasl
+
+
+# ==================================
+# Clase del suscriptor 
+# ==================================
+class Suscriptor_quadrotor_pose():
+	def __init__(self):
+		topic = '/ground_truth_to_tf/pose'
+		self.pose_actual = PoseStamped()
+		self.pub = rospy.Subscriber(topic,PoseStamped,self.callback_points)
+	def callback_points(self,msg):
+		self.pose_actual = msg
+		# print(self.pose_actual.pose.position.x)
+	def get_pose(self): 
+		x_act = self.pose_actual.pose.position.x
+		y_act = self.pose_actual.pose.position.y
+		z_act = self.pose_actual.pose.position.z
+		x_q_act = self.pose_actual.pose.orientation.x
+		y_q_act = self.pose_actual.pose.orientation.y
+		z_q_act = self.pose_actual.pose.orientation.z
+		w_act = self.pose_actual.pose.orientation.w
+		return np.array([x_act,y_act,z_act,x_q_act,y_q_act,z_q_act,w_act])
+
+
+
+# Inicializar el nodo
+rospy.init_node('quadrotor_follow')
+# rospy.init_node()
+
+# Publicar al nodo las velocidad de las ruedas
+topic_pub = '/action/pose/goal'
+pub = rospy.Publisher(topic_pub,PoseActionGoal,queue_size=10)
+pose_quadrotor = PoseActionGoal()
+
+# Definir el objeto sub para obtener la posición actual del robot
+sub_pose = Suscriptor_quadrotor_pose()
+
+# Definir el objecto 
+sub_displacement = Suscriptor_Displacement_to_object()
+
+# Iniciar despegue del robot
+
+pose_quadrotor.goal.target_pose.header.frame_id = "world"
+quadrotor_pos = pose_quadrotor.goal.target_pose.pose.position 
+quadrotor_or = pose_quadrotor.goal.target_pose.pose.orientation
+
+# Actualizar posición cartesiana del robot
+R = num.rotaxis(np.deg2rad(90),'z')#.dot(num.rotaxis(np.deg2rad(30),'x'))
+q = num.rot2quat(R)
+
+
+
+rate = rospy.Rate(50)
+
+while not rospy.is_shutdown():
+	med = sub_pose.get_pose()
+	displaced = sub_displacement.get_displacement()
+
+	if (np.all((displaced == 0)) != True):
+		des = np.hstack((displaced,q))
+		quadrotor_pos.x = des[0]
+		quadrotor_pos.y = des[1]
+		quadrotor_pos.z = des[2]
+		quadrotor_or.x = des[3]
+		quadrotor_or.y = des[4] 
+		quadrotor_or.z = des[5]
+		quadrotor_or.w = des[6]
+		print(med[0:3])
+		print(displaced[0:3])
+		pub.publish(pose_quadrotor)
+
+	rate.sleep()
+
+

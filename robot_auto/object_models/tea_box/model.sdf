@@ -1,0 +1,48 @@
+<?xml version='1.0'?>
+<sdf version='1.6'>
+  <model name='tea_box'>
+    <link name='link'>
+      <pose frame=''>0 0 0.075 0 -0 0</pose>
+      <inertial>
+        <mass>0.390</mass>
+        <inertia>
+          <ixx>0.000264062</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.000264062</iyy>
+          <iyz>0</iyz>
+          <izz>0.0001625</izz>
+        </inertia>
+      </inertial>
+      <visual name='visual'>
+        <geometry>
+          <box>
+            <size>0.1 0.1 0.15</size>
+          </box>
+        </geometry>
+             <material>
+          <script>
+            <uri>model://tea_box/materials/scripts</uri>
+            <uri>model://tea_box/materials/textures</uri>
+            <name>tea_pat</name>
+          </script>
+        </material>
+      
+        <cast_shadows>1</cast_shadows>
+        <transparency>0</transparency>
+      </visual>
+      <collision name='collision'>
+        <!-- <laser_retro>0</laser_retro> -->
+        <!-- <max_contacts>10</max_contacts> -->
+        <!-- <pose frame=''>0 0 0 0 -0 0</pose> -->
+        <geometry>
+          <box>
+            <size>0.1 0.1 0.15</size>
+          </box>
+        </geometry>
+       </collision>
+    </link>
+    <!-- <static>1</static> -->
+    <!-- <allow_auto_disable>1</allow_auto_disable> -->
+  </model>
+</sdf>

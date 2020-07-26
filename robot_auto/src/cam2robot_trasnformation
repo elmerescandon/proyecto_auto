@@ -1,0 +1,129 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import rospy
+import numpy as np
+import tf
+from sensor_msgs.msg import CameraInfo
+from std_msgs.msg import Float32MultiArray
+from std_msgs.msg import Int32MultiArray
+
+# ==================================
+# Clase Desplazamiento hacia objet
+# ==================================
+class Pixel_Follow():
+	def __init__(self):
+		self.pixel_array = [0,0]
+		self.p_Iu = np.array([[0],[0],[1]])
+		# Tópico para recibir la media del grupo de píxeles del objeto
+		topic_sub = '/pixel_reference'
+		subpix = rospy.Subscriber(topic_sub,Int32MultiArray,self.callback_pixel)
+	def callback_pixel(self,msg):
+		self.pixel_array = msg.data
+	def get_pixel(self):
+		self.p_Iu = np.array([[self.pixel_array[0]],[self.pixel_array[1]],[1]])
+		return self.p_Iu
+
+
+# ==================================
+# Clase Parámetros de la Cámara
+# ==================================
+class Cam_params():
+    def __init__(self):
+        self.camera_params = CameraInfo()
+        self.K = np.array([[639.99764915,0,640.5],
+        				   [0,639.99764915,360.5],
+        				   [0,0,1]])
+        topic_name = "/front_cam/camera/camera_info"
+        isub = rospy.Subscriber(topic_name, CameraInfo, self.cam_params_callback)
+
+    def cam_params_callback(self, msg):
+        k_array = msg.K
+    	self.K = np.array([[k_array[0],k_array[1],k_array[2]],
+					       [k_array[3],k_array[4],k_array[5]],
+					       [k_array[6],k_array[7],k_array[8]]])
+    def get_params(self):
+        return self.K
+
+# ==================================
+# Función de trasnformación Q to R
+# ==================================
+
+def rotFromQuat(q):
+    """ q = [ex, ey, ez, ew]
+    """
+    return np.array([[2.*(q[3]**2+q[0]**2)-1., 2.*(q[0]*q[1]-q[3]*q[2]), 2.*(q[0]*q[2]+q[3]*q[1])],
+                     [2.*(q[0]*q[1]+q[3]*q[2]), 2.*(q[3]**2+q[1]**2)-1., 2.*(q[1]*q[2]-q[3]*q[0])],
+                     [2.*(q[0]*q[2]-q[3]*q[1]), 2.*(q[1]*q[2]+q[3]*q[0]), 2.*(q[3]**2+q[2]**2)-1.]])
+
+# ==================================
+# Inicio de programa
+# ==================================
+
+rospy.init_node('camera_transformation')
+tflistener = tf.TransformListener()
+R_WC = np.eye(3)
+p = np.array([0,0,0])
+
+
+# Tópico para suscribirse al píxel de posición
+pixel_follow = Pixel_Follow()
+
+
+# Tópico para publicar la posición a desplazar
+topic_pub = '/pose_object_follow'
+pub_campose = rospy.Publisher(topic_pub,Float32MultiArray,queue_size=10)
+pose_object_follow = Float32MultiArray()
+
+
+# Código para identificar a qué eje se desplazará
+array_pose_follow = [0,0,0] # Pose del robot a desplazarse
+
+
+pose_object_follow.data = array_pose_follow
+
+
+# Objecto de parámetros de la cámara
+cam_params = Cam_params()
+l = 1 # Factor 
+direction = np.array([[0],[0],[0]])
+T_BF = np.eye(4)
+p_test = np.array([[0],[0],[0]])
+
+rate = rospy.Rate(30)
+while not rospy.is_shutdown():
+
+	p_Iu = pixel_follow.get_pixel()
+	if (p_Iu[0] != 0 and p_Iu[1] != 0):
+
+		# Obtener la matriz de rotación del sistema de la cámara al mundo 
+		try: 
+			(trans,rot) = tflistener.lookupTransform('world','front_cam_optical_frame',rospy.Time(0))
+			R_WC = rotFromQuat(rot)
+			p = np.array([[trans[0]],[trans[1]],[trans[2]]])
+			(trans2,rot2) = tflistener.lookupTransform('base_link','front_cam_link',rospy.Time(0))
+			p_trans2 = np.array([[trans2[0]],[trans2[1]],[trans2[2]]])
+
+		except (tf.Exception, tf.LookupException, tf.ConnectivityException):
+			pass
+
+		p_hat = np.array([[p[0]],[p[1]],[p[2]],[1]])
+		T_test = np.linalg.inv(T_BF).dot(p_hat)
+
+		# Proyecto el punto de la cámara con respecto al sistema del mundo
+		R_CW = np.linalg.inv(R_WC)
+		K = cam_params.get_params()
+		direction = l*np.linalg.inv(K.dot(R_CW)).dot(p_Iu)
+		if (np.round(direction[0][0],5) == 1.0):
+			p = p + np.array([[0],[direction[1][0]],[direction[2][0]]])
+		elif (np.round(direction[1][0],5) == 1.0):
+			p = p + np.array([[direction[0][0]],[0],[direction[2][0]]])
+
+		p_test = p - p_trans2 + np.array([[0.05],[-0.05],[0]])
+		print(p_test) # Pose deseada a trasladar
+
+	array_pose_follow = [p_test[0][0],p_test[1][0],p_test[2][0]]	
+	pose_object_follow.data = array_pose_follow
+	pub_campose.publish(pose_object_follow)		
+
+	rate.sleep()
