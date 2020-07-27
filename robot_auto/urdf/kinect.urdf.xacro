@@ -4,13 +4,13 @@
 
 
   <!-- Propiedades para simular con gazebo  -->
-  <xacro:include filename="$(find robot_auto)/urdf/kinect.gazebo.xacro"/>
+  <xacro:include filename="$(find autlab5)/urdf/kinect.gazebo.xacro"/>
 
-  <xacro:property name="cam_px" value="0.0" />
+  <xacro:property name="cam_px" value="0.1" />
   <xacro:property name="cam_py" value="0" />
-  <xacro:property name="cam_pz" value="0.077" />
+  <xacro:property name="cam_pz" value="-0.03" />
   <xacro:property name="cam_or" value="0" />
-  <xacro:property name="cam_op" value="0" />
+  <xacro:property name="cam_op" value="0.30" />
   <xacro:property name="cam_oy" value="0" />
   <xacro:property name="kinect_cam_py" value="-0.0125"/>
   <xacro:property name="M_PI" value="3.1415926535897931" /> 
@@ -37,26 +37,38 @@
       <parent link="camera_rgb_frame"/>
       <child link="camera_link"/>
     </joint>  
+
+
+
     <link name="camera_link">
+      <inertial>
+        <mass value="0.064" />
+        <origin xyz="0 0 0" />
+        <inertia ixx="5.8083e-4" ixy="0" ixz="0" iyy="3.0833e-5" iyz="0" izz="5.9083e-4"/>
+      </inertial>
       <visual>
-        <origin xyz="0 0 0" rpy="0 0 ${M_PI/2}"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
-          <mesh filename="package://robot_auto/urdf/meshes/kinect.dae"/>
+          <!-- <mesh filename="package://autlab5/urdf/meshes/kinect.dae"/> -->
+          <box size="0.007 0.130 0.02" />
         </geometry>
+        <material name="DarkGrey">
+           <color rgba="0.3 0.3 0.3 1"/>
+        </material>  
       </visual>
-      <collision>
+<!--       <collision>
         <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
   	<geometry>
   	  <box size="0.07271 0.27794 0.073"/>
   	</geometry>
-      </collision>
-      <inertial>
-        <mass value="0.564" />
-        <origin xyz="0 0 0" />
-        <inertia ixx="0.003881243" ixy="0.0" ixz="0.0"
-                 iyy="0.000498940" iyz="0.0"
-                 izz="0.003879257" />
-      </inertial>
+      </collision> -->
+        <collision>
+          <origin xyz="0 0 0" rpy="0 0 0" />
+          <geometry>
+            <!--Dimensions taken from https://software.intel.com/en-us/realsense/devkit-->
+            <box size="0.007 0.130 0.02" />
+          </geometry>
+        </collision>
     </link>
     
     <!-- The fixed joints & links below are usually published by static_transformers launched by the OpenNi launch 
