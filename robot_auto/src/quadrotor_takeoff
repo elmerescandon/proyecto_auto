@@ -6,19 +6,149 @@ import rospy
 import numpy as np
 from geometry_msgs.msg import PoseStamped
 from hector_uav_msgs.msg import PoseActionGoal
+from nav_msgs.msg import MapMetaData, OccupancyGrid
+from tf.transformations import quaternion_matrix
 import functions as num
+from rrt_functions import *
+import pickle
+
+
+
+
+class Robot():
+	def __init__(self):
+		self.sub_pose = SubQuadrotorPose()
+		self.sub_map = SubQuadrotorMap()
+		#self.sub_camera = 
+		self.pub = rospy.Publisher('/action/pose/goal',PoseActionGoal,queue_size=10)
+		
+		self.curGoal = PoseActionGoal()
+
+		self.path_map = PathGenerationFromMap()
+
+		self.pub = rospy.Subscriber('')
+
+		self.poses_path = []
+
+		self.curPoseidx = 0
+		self.curPose = np.array([])
+		self.nxtPose = np.array([])
+
+		rospy.sleep(2)
+
+	def main(self):
+		#Xs = []
+		#for x in self.path_map.poses_map:
+		#	tmp = self.sub_map.resolution * np.array(x) - np.array(self.sub_map.origin_x)[0:2]
+		#	print(tmp)
+		#	Xs.append(tmp)
+
+		# Xs = np.transpose(np.array(self.path_map.poses_map))
+		# Xs = np.vstack([Xs, np.ones( (2, np.shape(Xs)[1]))])
+		# self.poses_path = np.transpose(np.dot(self.sub_map.get_trans(), Xs)).tolist()
+		self.poses_path = self.path_map.poses_path
+		rate = rospy.Rate(50)
+
+		# Posicion inicial
+		x0 = np.array([ 37.5,17, 1])
+		q0 = roll_to_quat(90)
+		
+		#for _ in range(10000):
+		#	self.update_goal(x0, q0)
+		#	self.pub.publish(self.curGoal)
+
+		while not rospy.is_shutdown():
+			if flag_encontrar:
+				self.explorar_entorno()
+				print(self.nxtPose)
+			rate.sleep()
+
+	def explorar_entorno(self):
+		i = self.curPoseidx
+		self.curPose = self.poses_path[i]
+		if i < len(self.path_map.poses_path):
+			self.nxtPose = self.poses_path[i + 1]
+			x, q = self.obtain_goal()
+			self.update_goal(x, q)
+			self.pub.publish(self.curGoal)
+			self.checked_path(x, q)
+
+	def obtain_goal(self):
+		x = self.nxtPose[0]
+		y = self.nxtPose[1]
+		z = 1
+
+		angle = np.arctan2(self.nxtPose[1] - self.curPose[1],  self.nxtPose[0] - self.curPose[0]) 
+		x = np.array([x,y,z])
+		q = roll_to_quat(angle)
+		return x, q
+
+	def checked_path(self, x, q):
+		des = np.hstack((x,q))
+		med = self.sub_pose.get_pose()
+		if (np.linalg.norm(med - des) <= 0.01):
+			self.curPoseidx += 1
+
+	def update_goal(self, x, q):
+		self.curGoal.goal.target_pose.header.frame_id = "world"
+		self.curGoal.goal.target_pose.pose.position.x = x[0]
+		self.curGoal.goal.target_pose.pose.position.y = x[1]
+		self.curGoal.goal.target_pose.pose.position.z = x[2]
+		self.curGoal.goal.target_pose.pose.orientation.x = q[0]
+		self.curGoal.goal.target_pose.pose.orientation.y = q[1]
+		self.curGoal.goal.target_pose.pose.orientation.z = q[2]
+		self.curGoal.goal.target_pose.pose.orientation.w = q[3]
+
 
 
 
 # Clase del suscriptor 
-class suscriptor_quadrotor_pose():
+class SubQuadrotorMap():
+	def __init__(self):
+		topic = '/map'
+		rospy.Subscriber(topic,OccupancyGrid,self.cb_map)
+		self.map = []
+		self.resolution = 0
+		self.M = 0
+		self.N = 0
+		self.origin_x = []
+		self.origin_q = []
+
+	def cb_map(self, data):
+		self.map = data.data
+		self.resolution = data.info.resolution
+		self.M = data.info.height
+		self.N = data.info.width
+		self.origin_x = [128.024994, 128.024994, 0.000000]#[37.5, 16.5, 0.2]#[data.info.origin.position.x, data.info.origin.position.y, data.info.origin.position.z ]
+		self.origin_q = roll_to_quat(90)#[data.info.origin.orientation.x, data.info.origin.orientation.y, data.info.origin.orientation.z,data.info.origin.orientation.w]
+	
+	def get_trans(self):
+		R = np.array(quaternion_matrix(self.origin_q))[0:3,0:3]
+		p = np.array(self.origin_x).reshape(3,1)
+		tmp = np.hstack([R, p])
+		return self.resolution * np.vstack([tmp, np.array([[0,0,0,1]])])
+
+class PathGenerationFromMap():
+    def __init__(self):
+    	with open('./../maps/path.pickle', 'rb') as handle:
+    		paths = pickle.load(handle)
+    	positions = []
+    	vert = np.array([[41.64,19.59],[36.99,15.84],[34.41,15.57],[24.27,19.39],[41.92,15.16],[25.53,18.9],[42.56,19.88],[38.72,15.8],[42.19,18.63],[41.65,20.81],[42.79,14.16]])
+    	for path_i in paths:
+    		for pos in path_i:
+    			positions.append(vert[pos])
+    	print(positions)
+    	self.poses_path = positions
+
+# Clase del suscriptor 
+class SubQuadrotorPose():
 	def __init__(self):
 		topic = '/ground_truth_to_tf/pose'
 		self.pose_actual = PoseStamped()
 		self.pub = rospy.Subscriber(topic,PoseStamped,self.callback_points)
 	def callback_points(self,msg):
 		self.pose_actual = msg
-		# print(self.pose_actual.pose.position.x)
+
 	def get_pose(self): 
 		x_act = self.pose_actual.pose.position.x
 		y_act = self.pose_actual.pose.position.y
@@ -30,53 +160,22 @@ class suscriptor_quadrotor_pose():
 		return np.array([x_act,y_act,z_act,x_q_act,y_q_act,z_q_act,w_act])
 
 
-
-# Inicializar el nodo
-rospy.init_node('init_quadrotor')
-	
-topic_pub = '/action/pose/goal'
-pub = rospy.Publisher(topic_pub,PoseActionGoal,queue_size=10)
-pose_quadrotor = PoseActionGoal()
-
-# Definir el objeto sub
-sub = suscriptor_quadrotor_pose()
+def roll_to_quat(angle):
+	return num.rot2quat(num.rotaxis(np.deg2rad(angle),'z'))
 
 
-# Iniciar despegue del robot
-
-z_takeoff = 1.1
-y_beer_close = 18
-x_beer_close = 37
-
-pose_quadrotor.goal.target_pose.header.frame_id = "world"
-quadrotor_pos = pose_quadrotor.goal.target_pose.pose.position 
-quadrotor_or = pose_quadrotor.goal.target_pose.pose.orientation
-
-# Actualizar posición cartesiana del robot
-R = num.rotaxis(np.deg2rad(90),'z')#.dot(num.rotaxis(np.deg2rad(30),'x'))
-q = num.rot2quat(R)
-
-pub.publish(pose_quadrotor)   
+def main():
+	rate = rospy.Rate(50)
+	r = Robot()
+	r.main()
 
 
-# pose_actual = np.array([x_act,y_act,z_act])
 
-rate = rospy.Rate(50)
+if __name__ == "__main__":
+	# Inicializar el nodo
+	rospy.init_node('init_quadrotor')
+	main()
 
-while not rospy.is_shutdown():
-	med = sub.get_pose() 
-	quadrotor_pos.x = x_beer_close #med[0]
-	quadrotor_pos.y = y_beer_close #med[1]
-	quadrotor_pos.z = z_takeoff
-	quadrotor_or.x = q[0]
-	quadrotor_or.y = q[1] 
-	quadrotor_or.z = q[2]
-	quadrotor_or.w = q[3]
-	des = np.array([x_beer_close,y_beer_close,z_takeoff])
-	des = np.hstack((des,q))
-	pub.publish(pose_quadrotor)
-	print(np.linalg.norm(med - des))
-	if (np.linalg.norm(med - des) <= 0.01):
-		print(np.linalg.norm(med - des))
-		break;
-	rate.sleep()
+
+
+

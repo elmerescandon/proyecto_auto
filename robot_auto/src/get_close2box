@@ -5,9 +5,7 @@ import rospy
 import numpy as np
 import tf
 from sensor_msgs.msg import CameraInfo
-from std_msgs.msg import Float32MultiArray
-from std_msgs.msg import Float32
-from std_msgs.msg import Int32MultiArray
+from std_msgs.msg import Int32MultiArray,Bool,Float32,Float32MultiArray
 from robot_auto.msg import Teabox_detect
 from geometry_msgs.msg import PoseStamped
 from hector_uav_msgs.msg import PoseActionGoal
@@ -16,8 +14,18 @@ from hector_uav_msgs.msg import PoseActionGoal
 box1_pose = [37.378206,19.255097,0.775000]
 box2_pose = [40.167635,13.413286,0.774997]
 box3_pose = [43.494007,19.552097,0.886790]
-
-boxes = [box1_pose,box2_pose,box3_pose]
+box4_pose = [43.538385,22.782863,0.886794]
+box5_pose = [40.347300,24.432900,0.909000]
+box6_pose = [38.451601,24.458197,0.909000]
+box7_pose = [36.000901,24.460597,0.909000]
+box8_pose = [28.175306,20.353243,0.890216]
+box9_pose = [23.154997,20.362420,0.890217]
+box10_pose = [31.868636,16.804810,0.884735]
+box11_pose = [31.858388,14.056119,0.884764]
+box12_pose = [34.714498,13.379483,0.774997]
+boxes = [box1_pose,box2_pose,box3_pose,box4_pose,box5_pose,
+		 box6_pose,box7_pose,box8_pose,box9_pose,box10_pose,
+		 box11_pose,box12_pose]
 # ================================================
 # Clase del suscriptor de la pose actual del robot
 # ================================================
@@ -78,6 +86,12 @@ topic_pub = '/action/pose/goal'
 pub = rospy.Publisher(topic_pub,PoseActionGoal,queue_size=10)
 pose_quadrotor = PoseActionGoal()
 
+
+# 
+topic_pub2 = '/check_space'
+pub_2 = rospy.Publisher(topic_pub2,Bool,queue_size=10)
+revisar = Bool()
+
 # Definir el objeto sub para obtener la posición actual del robot
 sub_pose = Suscriptor_quadrotor_pose()
 sub_pixel = Pixel_Follow()
@@ -93,6 +107,7 @@ quadrotor_or = pose_quadrotor.goal.target_pose.pose.orientation
 
 rate = rospy.Rate(30)
 flag = True
+
 while not rospy.is_shutdown():
 	med = sub_pose.get_pose()
 	box_framed,box_possible = sub_pixel.get_pixel()
@@ -116,11 +131,14 @@ while not rospy.is_shutdown():
 
 			else:
 				pass
-		if box_framed:
-			boxes.remove(a)
-			print(boxes)
-			flag = False
-			print("Consiguió enmarcarlo")
+				
+			if box_framed:
+				boxes.remove(a)
+				print(boxes)
+				flag = False
+				print("Consiguió enmarcarlo")
+				revisar.data = True
+				pub_2.publish(revisar)
 
 
 
