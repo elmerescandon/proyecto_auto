@@ -6,7 +6,9 @@ import numpy as np
 import tf
 from sensor_msgs.msg import CameraInfo
 from std_msgs.msg import Float32MultiArray
+from std_msgs.msg import Float32
 from std_msgs.msg import Int32MultiArray
+from robot_auto.msg import Teabox_detect
 
 # ==================================
 # Clase Desplazamiento hacia objet
@@ -17,9 +19,9 @@ class Pixel_Follow():
 		self.p_Iu = np.array([[0],[0],[1]])
 		# Tópico para recibir la media del grupo de píxeles del objeto
 		topic_sub = '/pixel_reference'
-		subpix = rospy.Subscriber(topic_sub,Int32MultiArray,self.callback_pixel)
+		subpix = rospy.Subscriber(topic_sub,Teabox_detect,self.callback_pixel)
 	def callback_pixel(self,msg):
-		self.pixel_array = msg.data
+		self.pixel_array = msg.pixel
 	def get_pixel(self):
 		self.p_Iu = np.array([[self.pixel_array[0]],[self.pixel_array[1]],[1]])
 		return self.p_Iu
@@ -31,10 +33,10 @@ class Pixel_Follow():
 class Cam_params():
     def __init__(self):
         self.camera_params = CameraInfo()
-        self.K = np.array([[639.99764915,0,640.5],
-        				   [0,639.99764915,360.5],
-        				   [0,0,1]])
-        topic_name = "/front_cam/camera/camera_info"
+        self.K = np.array([[554.254691191187,0,320.5],
+        				   [0.0,554.254691191187,240.5],
+        				   [0.0,0.0,1.0]])
+        topic_name = "/camera/rgb/camera_info"
         isub = rospy.Subscriber(topic_name, CameraInfo, self.cam_params_callback)
 
     def cam_params_callback(self, msg):
@@ -44,6 +46,20 @@ class Cam_params():
 					       [k_array[6],k_array[7],k_array[8]]])
     def get_params(self):
         return self.K
+
+
+# ==================================
+# Clase obtener profundida de distancia
+# ==================================
+class Depth_distance():
+	def __init__(self):
+		# self.teabox_detection = Teabox_detect()
+		self.d = 0.0
+		subpix = rospy.Subscriber('/depth_distance',Float32,self.callback_depth)
+	def callback_depth(self,msg):
+		self.d = msg.data
+	def get_depth(self):
+		return self.d
 
 # ==================================
 # Función de trasnformación Q to R
@@ -66,9 +82,11 @@ R_WC = np.eye(3)
 p = np.array([0,0,0])
 
 
-# Tópico para suscribirse al píxel de posición
+# Objeto para suscribirse al píxel de posición
 pixel_follow = Pixel_Follow()
 
+# Objeto para obtener profundida hacia el objeto
+depth_d = Depth_distance()
 
 # Tópico para publicar la posición a desplazar
 topic_pub = '/pose_object_follow'
@@ -89,41 +107,59 @@ l = 1 # Factor
 direction = np.array([[0],[0],[0]])
 T_BF = np.eye(4)
 p_test = np.array([[0],[0],[0]])
+d = 0.0
+
+T_WC = np.eye(4)
+T_BC = np.eye(4)
+T_WB = np.eye(4)
 
 rate = rospy.Rate(30)
 while not rospy.is_shutdown():
 
 	p_Iu = pixel_follow.get_pixel()
 	if (p_Iu[0] != 0 and p_Iu[1] != 0):
-
+		d = depth_d.get_depth()
+		# p_Iu[2][0] = d
 		# Obtener la matriz de rotación del sistema de la cámara al mundo 
 		try: 
-			(trans,rot) = tflistener.lookupTransform('world','front_cam_optical_frame',rospy.Time(0))
-			R_WC = rotFromQuat(rot)
-			p = np.array([[trans[0]],[trans[1]],[trans[2]]])
-			(trans2,rot2) = tflistener.lookupTransform('base_link','front_cam_link',rospy.Time(0))
-			p_trans2 = np.array([[trans2[0]],[trans2[1]],[trans2[2]]])
+			(trans,rot) = tflistener.lookupTransform('world','camera_rgb_optical_frame',rospy.Time(0))
+			R_WC2 = rotFromQuat(rot)
+			T_WC[0:3,0:3] = R_WC2
+			T_WC[0:3,3] = trans 
+
+			(trans2,rot2) = tflistener.lookupTransform('base_link','camera_rgb_optical_frame',rospy.Time(0))
+			R_BC = rotFromQuat(rot2)
+			T_BC[0:3,0:3] = R_BC
+			T_BC[0:3,3] = trans2
+			
+			p_rgb2frame = np.array([[-trans2[1]],[trans2[0]],[trans2[2]]])
+			p_base = p - p_rgb2frame
+			
+			(trans3,rot3) = tflistener.lookupTransform('world','base_link',rospy.Time(0))
+			R_WB = rotFromQuat(rot3)
+			T_WB[0:3,0:3] = R_WB
+			T_WB[0:3,3] = trans3
+
+
 
 		except (tf.Exception, tf.LookupException, tf.ConnectivityException):
 			pass
 
-		p_hat = np.array([[p[0]],[p[1]],[p[2]],[1]])
-		T_test = np.linalg.inv(T_BF).dot(p_hat)
-
 		# Proyecto el punto de la cámara con respecto al sistema del mundo
-		R_CW = np.linalg.inv(R_WC)
 		K = cam_params.get_params()
-		direction = l*np.linalg.inv(K.dot(R_CW)).dot(p_Iu)
-		if (np.round(direction[0][0],5) == 1.0):
-			p = p + np.array([[0],[direction[1][0]],[direction[2][0]]])
-		elif (np.round(direction[1][0],5) == 1.0):
-			p = p + np.array([[direction[0][0]],[0],[direction[2][0]]])
+		direction = l*np.linalg.inv(K.dot(R_BC.T)).dot(p_Iu)
+		direction_des = R_WB.dot(direction)
 
-		p_test = p - p_trans2 + np.array([[0.05],[-0.05],[0]])
-		print(p_test) # Pose deseada a trasladar
 
-	array_pose_follow = [p_test[0][0],p_test[1][0],p_test[2][0]]	
-	pose_object_follow.data = array_pose_follow
-	pub_campose.publish(pose_object_follow)		
+		direction[1][0] = 0
+
+		direction_ = np.array([[direction[0][0]],[direction[1][0]],[direction[2][0]]])
+		p_des = direction_des + np.array([[trans3[0]],[trans3[1]],[trans3[2]]])
+		print(p_des)
+		array_pose_follow = [p_des[0][0],p_des[1][0],p_des[2][0]]
+		pose_object_follow.data = array_pose_follow
+		# print(array_pose_follow)
+		pub_campose.publish(pose_object_follow)
+
 
 	rate.sleep()

@@ -33,9 +33,7 @@ class suscriptor_quadrotor_pose():
 
 # Inicializar el nodo
 rospy.init_node('init_quadrotor')
-# rospy.init_node()
-
-# Publicar al nodo las velocidad de las ruedas
+	
 topic_pub = '/action/pose/goal'
 pub = rospy.Publisher(topic_pub,PoseActionGoal,queue_size=10)
 pose_quadrotor = PoseActionGoal()
@@ -46,9 +44,9 @@ sub = suscriptor_quadrotor_pose()
 
 # Iniciar despegue del robot
 
-z_takeoff = 1
-y_beer_close = 17
-x_beer_close = 37.5 
+z_takeoff = 1.1
+y_beer_close = 18
+x_beer_close = 37
 
 pose_quadrotor.goal.target_pose.header.frame_id = "world"
 quadrotor_pos = pose_quadrotor.goal.target_pose.pose.position 

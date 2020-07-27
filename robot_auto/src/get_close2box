@@ -1,36 +1,23 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from __future__ import print_function
 import rospy
 import numpy as np
-from geometry_msgs.msg import PoseStamped
-from hector_uav_msgs.msg import PoseActionGoal
-import functions as num
+import tf
+from sensor_msgs.msg import CameraInfo
 from std_msgs.msg import Float32MultiArray
 from std_msgs.msg import Float32
+from std_msgs.msg import Int32MultiArray
 from robot_auto.msg import Teabox_detect
+from geometry_msgs.msg import PoseStamped
+from hector_uav_msgs.msg import PoseActionGoal
 
 
+box1_pose = [37.378206,19.255097,0.775000]
+box2_pose = [40.167635,13.413286,0.774997]
+box3_pose = [43.494007,19.552097,0.886790]
 
-
-# ==================================
-# Clase Desplazamiento hacia objeto
-# ==================================
-class Suscriptor_Displacement_to_object():
-	def __init__(self):
-		self.pose_displaced = [0,0,0]
-		self.p_trasl = np.array([0,0,0])
-		# Tópico para recibir la media del grupo de píxeles del objeto
-		topic_sub = '/pose_object_follow'
-		subpix = rospy.Subscriber(topic_sub,Float32MultiArray,self.callback_displace)
-	def callback_displace(self,msg):
-		self.pose_displaced = msg.data
-	def get_displacement(self):
-		self.p_trasl = np.array(self.pose_displaced)
-		return self.p_trasl
-
-
+boxes = [box1_pose,box2_pose,box3_pose]
 # ================================================
 # Clase del suscriptor de la pose actual del robot
 # ================================================
@@ -54,6 +41,20 @@ class Suscriptor_quadrotor_pose():
 
 
 # ==================================
+# Clase obtener profundida de distancia
+# ==================================
+class Depth_distance():
+	def __init__(self):
+		# self.teabox_detection = Teabox_detect()
+		self.d = 0.0
+		subpix = rospy.Subscriber('/depth_distance',Float32,self.callback_depth)
+	def callback_depth(self,msg):
+		self.d = msg.data
+	def get_depth(self):
+		return self.d
+
+
+# ==================================
 # Clase obtener banderas del objeto 
 # ==================================
 class Pixel_Follow():
@@ -69,10 +70,8 @@ class Pixel_Follow():
 		return self.box_framed,self.possible_box
 
 
-# ==================================
-# Inicializar el nodo
-# =================================
-rospy.init_node('quadrotor_follow')
+# Inicializar nodo y suscripciones
+rospy.init_node('get_close2box')
 
 # Publicar al nodo las velocidad de las ruedas
 topic_pub = '/action/pose/goal'
@@ -81,13 +80,8 @@ pose_quadrotor = PoseActionGoal()
 
 # Definir el objeto sub para obtener la posición actual del robot
 sub_pose = Suscriptor_quadrotor_pose()
-
-# Definir el objeto que retorna la posición para acercarse al TeaBox
-sub_displacement = Suscriptor_Displacement_to_object()
-
-# Definir el objeto que retorna las banderas
-sub_flags = Pixel_Follow()
-
+sub_pixel = Pixel_Follow()
+sub_depth = Depth_distance()
 
 
 # Iniciar despegue del robot
@@ -98,21 +92,35 @@ quadrotor_or = pose_quadrotor.goal.target_pose.pose.orientation
 
 
 rate = rospy.Rate(30)
+flag = True
 while not rospy.is_shutdown():
-	box_f,box_poss = sub_flags.get_pixel()
+	med = sub_pose.get_pose()
+	box_framed,box_possible = sub_pixel.get_pixel()
+	box_delete = []
+	if box_possible and flag:
+		for a in boxes: 
+			box = np.array(a)
+			box_delete = a 
+			if 0.4 < np.linalg.norm(box - med[0:3]) < 3:
+				# print(np.linalg.norm(box - med[0:3]))
+					error_x = box[0] - med[0]
+					error_y = box[1] - med[1]
+			 		quadrotor_pos.x = med[0] + error_x/20
+			 		quadrotor_pos.y = med[1] + error_y/20
+					quadrotor_pos.z = box[2] + 0.2
+					print(quadrotor_pos.x)
+					print(quadrotor_pos.y)
+					pub.publish(pose_quadrotor)
+			elif np.linalg.norm(box - med[0:3])<= 0.4:
+				print("Ya llego al punto")
 
-	if box_poss:
-		p_des = sub_displacement.get_displacement()
-		print(p_des)
-		if (np.all((p_des == 0)) != True):
-			quadrotor_pos.x = p_des[0]
-			quadrotor_pos.y = p_des[1]
-			quadrotor_pos.z = p_des[2]
-			pub.publish(pose_quadrotor)
-			print("Moviéndose")
-	elif box_f:
-		break;
+			else:
+				pass
+		if box_framed:
+			boxes.remove(a)
+			print(boxes)
+			flag = False
+			print("Consiguió enmarcarlo")
 
-	rate.sleep()
 
 

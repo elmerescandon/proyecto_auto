@@ -10,7 +10,7 @@
   <xacro:property name="cam_py" value="0" />
   <xacro:property name="cam_pz" value="-0.03" />
   <xacro:property name="cam_or" value="0" />
-  <xacro:property name="cam_op" value="0.30" />
+  <xacro:property name="cam_op" value="0" />
   <xacro:property name="cam_oy" value="0" />
   <xacro:property name="kinect_cam_py" value="-0.0125"/>
   <xacro:property name="M_PI" value="3.1415926535897931" /> 

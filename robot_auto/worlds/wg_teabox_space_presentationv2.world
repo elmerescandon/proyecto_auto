@@ -38,7 +38,7 @@
     </model>
     <gui fullscreen='0'>
       <camera name='user_camera'>
-        <pose frame=''>36.012 11.8412 15.6893 0 1.33654 1.22856</pose>
+        <pose frame=''>50.3748 20.8283 19.7622 0 1.06453 2.97961</pose>
         <view_controller>orbit</view_controller>
         <projection_type>perspective</projection_type>
       </camera>
@@ -64,55 +64,35 @@
       <heading_deg>0</heading_deg>
     </spherical_coordinates>
     <state world_name='world'>
-      <sim_time>1232 708000000</sim_time>
-      <real_time>1107 550095164</real_time>
-      <wall_time>1595795223 809250518</wall_time>
-      <iterations>797326</iterations>
-      <model name='beer'>
-        <pose frame=''>37.4134 19.1691 0.775002 8e-06 2.9e-05 -8.2e-05</pose>
-        <scale>1 1 1</scale>
-        <link name='link'>
-          <pose frame=''>37.4134 19.1691 0.890002 8e-06 2.9e-05 -8.2e-05</pose>
-          <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>0.006107 -0.00097 19.5857 -0.000737 0.054247 0.018504</acceleration>
-          <wrench>0.002382 -0.000378 7.63842 0 -0 0</wrench>
-        </link>
-      </model>
-      <model name='beer_clone'>
-        <pose frame=''>37.353 19.4142 0.775001 1e-06 -2.7e-05 0.001966</pose>
-        <scale>1 1 1</scale>
-        <link name='link'>
-          <pose frame=''>37.353 19.4142 0.890001 1e-06 -2.7e-05 0.001966</pose>
-          <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>0 0 -9.8 0 -0 0</acceleration>
-          <wrench>0 0 -3.822 0 -0 0</wrench>
-        </link>
-      </model>
-      <model name='beer_clone_0'>
-        <pose frame=''>37.3169 19.5944 0.774991 6e-06 1e-05 0.005223</pose>
-        <scale>1 1 1</scale>
-        <link name='link'>
-          <pose frame=''>37.3169 19.5944 0.889991 6e-06 1e-05 0.005223</pose>
-          <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>0 0 -9.8 0 -0 0</acceleration>
-          <wrench>0 0 -3.822 0 -0 0</wrench>
-        </link>
-      </model>
-      <model name='beer_clone_1'>
-        <pose frame=''>37.5955 19.4945 0.77499 -1e-06 -3e-06 0.008761</pose>
-        <scale>1 1 1</scale>
-        <link name='link'>
-          <pose frame=''>37.5955 19.4945 0.88999 -1e-06 -3e-06 0.008761</pose>
-          <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>0 0 -9.8 0 -0 0</acceleration>
-          <wrench>0 0 -3.822 0 -0 0</wrench>
-        </link>
-      </model>
+      <sim_time>1349 874000000</sim_time>
+      <real_time>168 539753538</real_time>
+      <wall_time>1595861439 506762210</wall_time>
+      <iterations>91187</iterations>
       <model name='cafe_table'>
         <pose frame=''>37.3436 19.3335 0 0 -0 0</pose>
         <scale>1 1 1</scale>
         <link name='link'>
           <pose frame=''>37.3436 19.3335 0 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='cafe_table_clone_3'>
+        <pose frame=''>40.2103 13.1352 0 0 -0 0</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose frame=''>40.2103 13.1352 0 0 -0 0</pose>
+          <velocity>0 0 0 0 -0 0</velocity>
+          <acceleration>0 0 0 0 -0 0</acceleration>
+          <wrench>0 0 0 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='cafe_table_clone_5'>
+        <pose frame=''>34.7286 13.1167 0 0 -0 0</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose frame=''>34.7286 13.1167 0 0 -0 0</pose>
           <velocity>0 0 0 0 -0 0</velocity>
           <acceleration>0 0 0 0 -0 0</acceleration>
           <wrench>0 0 0 0 -0 0</wrench>
@@ -198,151 +178,161 @@
           <wrench>0 0 0 0 -0 0</wrench>
         </link>
       </model>
-      <model name='quadrotor'>
-        <pose frame=''>37.499 16.9979 0.182462 -1.1e-05 2.8e-05 -0.229853</pose>
-        <scale>1 1 1</scale>
-        <link name='base_link'>
-          <pose frame=''>37.499 16.9979 0.182462 -1.1e-05 2.8e-05 -0.229853</pose>
-          <velocity>0.005866 0.000941 -0.004271 -0.005662 0.031901 -0.00072</velocity>
-          <acceleration>0.834119 0.397656 -8.43248 0.755193 -1.20244 -3.02223</acceleration>
-          <wrench>1.45804 0.695103 -14.74 0 -0 0</wrench>
-        </link>
-      </model>
       <model name='tea_box_0'>
-        <pose frame=''>36.2227 18.9519 0 5e-06 -1.6e-05 -1.1e-05</pose>
+        <pose frame=''>37.3782 19.2551 0.775 -1.6e-05 2e-06 -0.000194</pose>
         <scale>1 1 1</scale>
         <link name='link'>
-          <pose frame=''>36.2227 18.9519 0.075 5e-06 -1.6e-05 -1.1e-05</pose>
-          <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>8.41692 -0.38294 5.75365 -0.727462 -0.795942 -0.475593</acceleration>
-          <wrench>3.2826 -0.149347 2.24392 0 -0 0</wrench>
+          <pose frame=''>37.3782 19.2551 0.85 -1.6e-05 2e-06 -0.000194</pose>
+          <velocity>8.5e-05 -0.002968 0.002868 0.039697 0.00115 -4e-06</velocity>
+          <acceleration>0.22453 -8.34437 5.73853 1.43832 -0.087876 -2.90466</acceleration>
+          <wrench>0.087567 -3.25431 2.23803 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='tea_box_0_clone_clone'>
+        <pose frame=''>34.7145 13.3795 0.775063 -1.6e-05 2e-06 -0.000196</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose frame=''>34.7145 13.3795 0.850063 -1.6e-05 2e-06 -0.000196</pose>
+          <velocity>8.5e-05 -0.002968 0.002868 0.039697 0.00115 -4e-06</velocity>
+          <acceleration>0.224513 -8.34438 5.73853 1.43833 -0.087658 -2.90465</acceleration>
+          <wrench>0.08756 -3.25431 2.23803 0 -0 0</wrench>
         </link>
       </model>
       <model name='tea_box_0_clone_clone_0'>
-        <pose frame=''>28.1753 20.3531 0.890218 3e-06 -1.1e-05 -0.003523</pose>
+        <pose frame=''>28.1753 20.3532 0.890217 3e-06 -1.1e-05 -0.005102</pose>
         <scale>1 1 1</scale>
         <link name='link'>
-          <pose frame=''>28.1753 20.3531 0.965218 3e-06 -1.1e-05 -0.003523</pose>
-          <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>5.50645 3.0572 1.95957 0.010922 -1.10899 3.02003</acceleration>
-          <wrench>2.14752 1.19231 0.764234 0 -0 0</wrench>
+          <pose frame=''>28.1753 20.3532 0.965217 3e-06 -1.1e-05 -0.005102</pose>
+          <velocity>0.001856 0.001122 0.001041 -0.015029 0.024691 -0.000112</velocity>
+          <acceleration>5.42025 3.051 1.77475 0.078914 0.044879 3.04754</acceleration>
+          <wrench>2.1139 1.18989 0.692151 0 -0 0</wrench>
         </link>
       </model>
       <model name='tea_box_0_clone_clone_0_clone'>
-        <pose frame=''>23.155 20.3624 0.890217 1.1e-05 -1.6e-05 -0.000745</pose>
+        <pose frame=''>23.155 20.3624 0.890217 1e-06 -2e-06 -0.000958</pose>
         <scale>1 1 1</scale>
         <link name='link'>
-          <pose frame=''>23.155 20.3624 0.965217 1.1e-05 -1.6e-05 -0.000745</pose>
-          <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>0.562945 -0.837826 -1.13648 -1.99881 1.4682 0.994379</acceleration>
-          <wrench>0.219548 -0.326752 -0.443228 0 -0 0</wrench>
+          <pose frame=''>23.155 20.3624 0.965217 1e-06 -2e-06 -0.000958</pose>
+          <velocity>0.000924 0.000593 9.1e-05 -0.007901 0.012326 -1e-06</velocity>
+          <acceleration>2.77391 2.0217 0.144838 -1.82226 -0.71971 -0.012153</acceleration>
+          <wrench>1.08183 0.788463 0.056487 0 -0 0</wrench>
+        </link>
+      </model>
+      <model name='tea_box_0_clone_clone_2_clone'>
+        <pose frame=''>40.1675 13.4133 0.791802 -2e-06 5.6e-05 -0.000157</pose>
+        <scale>1 1 1</scale>
+        <link name='link'>
+          <pose frame=''>40.1675 13.4133 0.866802 -2e-06 5.6e-05 -0.000157</pose>
+          <velocity>0.005413 -0.000172 -0.002877 0.002787 0.072134 0.000455</velocity>
+          <acceleration>2.40881 -0.382919 -5.75366 -0.72782 0.551024 0.434933</acceleration>
+          <wrench>0.939437 -0.149338 -2.24392 0 -0 0</wrench>
         </link>
       </model>
       <model name='tea_box_1'>
-        <pose frame=''>31.8584 14.0561 0.884765 -0.014692 -1.1e-05 0.000276</pose>
+        <pose frame=''>31.8584 14.0561 0.884766 -0.014718 1.3e-05 0.00111</pose>
         <scale>1 1 1</scale>
         <link name='link'>
-          <pose frame=''>31.8584 14.0572 0.959757 -0.014692 -1.1e-05 0.000276</pose>
-          <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>-0.685801 -0.81416 -2.80733 0.869866 -0.296824 -3.11294</acceleration>
-          <wrench>-0.267462 -0.317523 -1.09486 0 -0 0</wrench>
+          <pose frame=''>31.8584 14.0572 0.959758 -0.014718 1.3e-05 0.00111</pose>
+          <velocity>0.000866 0.002011 0.001112 -0.026469 0.01181 0.000275</velocity>
+          <acceleration>2.33874 5.81912 1.76548 -1.71167 0.038128 0.274978</acceleration>
+          <wrench>0.912108 2.26946 0.688537 0 -0 0</wrench>
         </link>
       </model>
       <model name='tea_box_1_clone'>
-        <pose frame=''>31.8687 16.8043 0.884733 -0.014734 -1.2e-05 -0.00068</pose>
+        <pose frame=''>31.8687 16.8047 0.884736 -0.014708 -0 -0.001277</pose>
         <scale>1 1 1</scale>
         <link name='link'>
-          <pose frame=''>31.8687 16.8054 0.959724 -0.014734 -1.2e-05 -0.00068</pose>
-          <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>0 0 -9.8 0 -0 0</acceleration>
-          <wrench>0 0 -3.822 0 -0 0</wrench>
+          <pose frame=''>31.8687 16.8058 0.959728 -0.014708 -0 -0.001277</pose>
+          <velocity>0.001453 -0.001918 -0.000427 0.025482 0.019366 -0.000287</velocity>
+          <acceleration>1.32753 -0.88399 -0.452359 -0.869428 -1.14926 -0.099321</acceleration>
+          <wrench>0.517737 -0.344756 -0.17642 0 -0 0</wrench>
         </link>
       </model>
       <model name='tea_box_1_clone_0'>
-        <pose frame=''>37.2268 24.6506 0.909 6e-06 1e-06 6e-06</pose>
+        <pose frame=''>37.2268 24.6506 0.909 3.4e-05 -4e-06 2.9e-05</pose>
         <scale>1 1 1</scale>
         <link name='link'>
-          <pose frame=''>37.2268 24.6506 0.984 6e-06 1e-06 6e-06</pose>
-          <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>0.722523 4.80064 0.830424 1.91979 -0.208466 3.11227</acceleration>
-          <wrench>0.281784 1.87225 0.323865 0 -0 0</wrench>
+          <pose frame=''>37.2268 24.6506 0.984 3.4e-05 -4e-06 2.9e-05</pose>
+          <velocity>-0.000324 -0.002702 -0.000422 0.036026 -0.004325 2.3e-05</velocity>
+          <acceleration>-0.650302 -1.22755 -0.469882 0.656714 -0.749 -3.11876</acceleration>
+          <wrench>-0.253618 -0.478743 -0.183254 0 -0 0</wrench>
         </link>
       </model>
       <model name='tea_box_1_clone_0_clone'>
-        <pose frame=''>36.0009 24.4606 0.909 4e-06 -9e-06 -1.4e-05</pose>
+        <pose frame=''>36.0009 24.4606 0.909 -2e-06 -0 -0.00014</pose>
         <scale>1 1 1</scale>
         <link name='link'>
-          <pose frame=''>36.0009 24.4606 0.984 4e-06 -9e-06 -1.4e-05</pose>
-          <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>5.59124 1.6016 1.58988 -2.60143 -0.78497 -0.176216</acceleration>
-          <wrench>2.18058 0.624622 0.620054 0 -0 0</wrench>
+          <pose frame=''>36.0009 24.4606 0.984 -2e-06 -0 -0.00014</pose>
+          <velocity>0.000326 -0.001475 4.8e-05 0.019661 0.004351 0</velocity>
+          <acceleration>0.726421 -3.54904 0.081703 0.196313 -0.26087 -3.14136</acceleration>
+          <wrench>0.283304 -1.38413 0.031864 0 -0 0</wrench>
         </link>
       </model>
       <model name='tea_box_1_clone_0_clone_0'>
-        <pose frame=''>38.4516 24.4582 0.909 4e-06 -9e-06 -1.4e-05</pose>
+        <pose frame=''>38.4516 24.4582 0.909 -2e-06 -0 -0.00014</pose>
         <scale>1 1 1</scale>
         <link name='link'>
-          <pose frame=''>38.4516 24.4582 0.984 4e-06 -9e-06 -1.4e-05</pose>
-          <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>5.59124 1.6016 1.58988 -2.60143 -0.78497 -0.176216</acceleration>
-          <wrench>2.18058 0.624622 0.620054 0 -0 0</wrench>
+          <pose frame=''>38.4516 24.4582 0.984 -2e-06 -0 -0.00014</pose>
+          <velocity>0.000326 -0.001475 4.8e-05 0.019661 0.004351 0</velocity>
+          <acceleration>0.726421 -3.54904 0.081703 0.196313 -0.26087 -3.14136</acceleration>
+          <wrench>0.283304 -1.38413 0.031864 0 -0 0</wrench>
         </link>
       </model>
       <model name='tea_box_1_clone_0_clone_1'>
-        <pose frame=''>39.4439 24.4207 0.909 4e-06 -9e-06 -1.4e-05</pose>
+        <pose frame=''>39.4439 24.4207 0.909 -2e-06 -0 -0.00014</pose>
         <scale>1 1 1</scale>
         <link name='link'>
-          <pose frame=''>39.4439 24.4207 0.984 4e-06 -9e-06 -1.4e-05</pose>
-          <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>5.59124 1.6016 1.58988 -2.60143 -0.78497 -0.176216</acceleration>
-          <wrench>2.18058 0.624622 0.620054 0 -0 0</wrench>
+          <pose frame=''>39.4439 24.4207 0.984 -2e-06 -0 -0.00014</pose>
+          <velocity>0.000326 -0.001475 4.8e-05 0.019661 0.004351 0</velocity>
+          <acceleration>0.726421 -3.54904 0.081703 0.196313 -0.26087 -3.14136</acceleration>
+          <wrench>0.283304 -1.38413 0.031864 0 -0 0</wrench>
         </link>
       </model>
       <model name='tea_box_1_clone_0_clone_2'>
-        <pose frame=''>40.3473 24.4329 0.909 3.4e-05 -4e-06 8e-06</pose>
+        <pose frame=''>40.3473 24.4329 0.909 0 -2e-06 4.6e-05</pose>
         <scale>1 1 1</scale>
         <link name='link'>
-          <pose frame=''>40.3473 24.4329 0.984 3.4e-05 -4e-06 8e-06</pose>
-          <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>-0.650305 -1.22753 -0.469877 0.656555 -0.748958 -3.11877</acceleration>
-          <wrench>-0.253619 -0.478738 -0.183252 0 -0 0</wrench>
+          <pose frame=''>40.3473 24.4329 0.984 0 -2e-06 4.6e-05</pose>
+          <velocity>0.001938 0.00032 9.1e-05 -0.004261 0.025847 1.3e-05</velocity>
+          <acceleration>4.21839 0.689861 0.182051 -2.90773 -0.295344 0.010141</acceleration>
+          <wrench>1.64517 0.269046 0.071 0 -0 0</wrench>
         </link>
       </model>
       <model name='tea_box_1_clone_0_clone_2_clone'>
-        <pose frame=''>43.494 19.5521 0.886793 -1.2e-05 -1.7e-05 -0.000199</pose>
+        <pose frame=''>43.494 19.5521 0.886795 -2.4e-05 -4e-06 -0.001836</pose>
         <scale>1 1 1</scale>
         <link name='link'>
-          <pose frame=''>43.494 19.5521 0.961793 -1.2e-05 -1.7e-05 -0.000199</pose>
-          <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>-1.77321 -0.552929 -0.570307 1.10368 1.55884 0.017293</acceleration>
-          <wrench>-0.691552 -0.215642 -0.22242 0 -0 0</wrench>
+          <pose frame=''>43.494 19.5521 0.961795 -2.4e-05 -4e-06 -0.001836</pose>
+          <velocity>-0.000117 -0.002817 0.002115 0.037831 -0.001705 0.000612</velocity>
+          <acceleration>0.04508 -7.84277 3.70278 -1.98054 0.453175 0.61435</acceleration>
+          <wrench>0.017581 -3.05868 1.44408 0 -0 0</wrench>
         </link>
       </model>
       <model name='tea_box_1_clone_0_clone_2_clone_clone'>
-        <pose frame=''>43.5333 22.777 0.886794 7e-06 -0 0.006398</pose>
+        <pose frame=''>43.5376 22.7818 0.886799 -0.000127 -3.1e-05 0.051769</pose>
         <scale>1 1 1</scale>
         <link name='link'>
-          <pose frame=''>43.5333 22.777 0.961794 7e-06 -0 0.006398</pose>
-          <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>0.0503 -2.46538 0.020005 1.44159 0.682579 0.029102</acceleration>
-          <wrench>0.019617 -0.961497 0.007802 0 -0 0</wrench>
+          <pose frame=''>43.5376 22.7818 0.961799 -0.000127 -3.1e-05 0.051769</pose>
+          <velocity>-0.002459 0.002042 0.006867 -0.027104 -0.033124 0.000614</velocity>
+          <acceleration>-2.14274 -5.31399 -0.649386 -1.28718 0.504784 -2.18106</acceleration>
+          <wrench>-0.835667 -2.07246 -0.25326 0 -0 0</wrench>
         </link>
       </model>
       <model name='tea_box_1_clone_1'>
-        <pose frame=''>35 25.4489 -3e-06 5.6e-05 2e-06 -2e-06</pose>
+        <pose frame=''>35 25.4319 -3e-06 2e-06 -5.6e-05 -2.1e-05</pose>
         <scale>1 1 1</scale>
         <link name='link'>
-          <pose frame=''>35 25.4489 0.074997 5.6e-05 2e-06 -2e-06</pose>
-          <velocity>0 0 0 0 -0 0</velocity>
-          <acceleration>-0.277921 -2.41443 -5.74427 -2.51172 0.901955 -2.76512</acceleration>
-          <wrench>-0.108389 -0.941627 -2.24026 0 -0 0</wrench>
+          <pose frame=''>35 25.4319 0.074997 2e-06 -5.6e-05 -2.1e-05</pose>
+          <velocity>-0.005413 0.000172 -0.002877 -0.002779 -0.072135 0.000455</velocity>
+          <acceleration>-2.40887 0.38285 -5.75365 0.728647 -0.551762 0.435008</acceleration>
+          <wrench>-0.939459 0.149312 -2.24392 0 -0 0</wrench>
         </link>
       </model>
       <model name='wg_expandedv2_0'>
-        <pose frame=''>-1.43625 3.51678 0 0 -0 0</pose>
+        <pose frame=''>-1.45034 3.49733 0 0 -0 0</pose>
         <scale>1 1 1</scale>
         <link name='body'>
-          <pose frame=''>-1.43625 3.51678 0 0 -0 0</pose>
+          <pose frame=''>-1.45034 3.49733 0 0 -0 0</pose>
           <velocity>0 0 0 0 -0 0</velocity>
           <acceleration>0 0 0 0 -0 0</acceleration>
           <wrench>0 0 0 0 -0 0</wrench>
@@ -543,230 +533,6 @@
         <gravity>1</gravity>
       </link>
       <pose frame=''>37.2768 19.3699 0 0 -0 0</pose>
-    </model>
-    <model name='beer'>
-      <link name='link'>
-        <pose frame=''>0 0 0.115 0 -0 0</pose>
-        <inertial>
-          <mass>0.39</mass>
-          <inertia>
-            <ixx>0.00058</ixx>
-            <ixy>0</ixy>
-            <ixz>0</ixz>
-            <iyy>0.00058</iyy>
-            <iyz>0</iyz>
-            <izz>0.00019</izz>
-          </inertia>
-        </inertial>
-        <collision name='collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.055</radius>
-              <length>0.23</length>
-            </cylinder>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
-        <visual name='visual'>
-          <geometry>
-            <cylinder>
-              <radius>0.055</radius>
-              <length>0.23</length>
-            </cylinder>
-          </geometry>
-          <material>
-            <script>
-              <uri>model://beer/materials/scripts</uri>
-              <uri>model://beer/materials/textures</uri>
-              <name>Beer/Diffuse</name>
-            </script>
-          </material>
-        </visual>
-        <self_collide>0</self_collide>
-        <kinematic>0</kinematic>
-        <gravity>1</gravity>
-      </link>
-      <pose frame=''>37.845 18.9082 0 0 -0 0</pose>
-    </model>
-    <model name='beer_clone'>
-      <link name='link'>
-        <pose frame=''>0 0 0.115 0 -0 0</pose>
-        <inertial>
-          <mass>0.39</mass>
-          <inertia>
-            <ixx>0.00058</ixx>
-            <ixy>0</ixy>
-            <ixz>0</ixz>
-            <iyy>0.00058</iyy>
-            <iyz>0</iyz>
-            <izz>0.00019</izz>
-          </inertia>
-        </inertial>
-        <collision name='collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.055</radius>
-              <length>0.23</length>
-            </cylinder>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
-        <visual name='visual'>
-          <geometry>
-            <cylinder>
-              <radius>0.055</radius>
-              <length>0.23</length>
-            </cylinder>
-          </geometry>
-          <material>
-            <script>
-              <uri>model://beer/materials/scripts</uri>
-              <uri>model://beer/materials/textures</uri>
-              <name>Beer/Diffuse</name>
-            </script>
-          </material>
-        </visual>
-        <self_collide>0</self_collide>
-        <kinematic>0</kinematic>
-        <gravity>1</gravity>
-      </link>
-      <pose frame=''>35.4602 20.3709 0.777514 -0 -0 -1.1e-05</pose>
-    </model>
-    <model name='beer_clone_0'>
-      <link name='link'>
-        <pose frame=''>0 0 0.115 0 -0 0</pose>
-        <inertial>
-          <mass>0.39</mass>
-          <inertia>
-            <ixx>0.00058</ixx>
-            <ixy>0</ixy>
-            <ixz>0</ixz>
-            <iyy>0.00058</iyy>
-            <iyz>0</iyz>
-            <izz>0.00019</izz>
-          </inertia>
-        </inertial>
-        <collision name='collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.055</radius>
-              <length>0.23</length>
-            </cylinder>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
-        <visual name='visual'>
-          <geometry>
-            <cylinder>
-              <radius>0.055</radius>
-              <length>0.23</length>
-            </cylinder>
-          </geometry>
-          <material>
-            <script>
-              <uri>model://beer/materials/scripts</uri>
-              <uri>model://beer/materials/textures</uri>
-              <name>Beer/Diffuse</name>
-            </script>
-          </material>
-        </visual>
-        <self_collide>0</self_collide>
-        <kinematic>0</kinematic>
-        <gravity>1</gravity>
-      </link>
-      <pose frame=''>37.317 19.5944 0.777514 -0 -0 -1.1e-05</pose>
-    </model>
-    <model name='beer_clone_1'>
-      <link name='link'>
-        <pose frame=''>0 0 0.115 0 -0 0</pose>
-        <inertial>
-          <mass>0.39</mass>
-          <inertia>
-            <ixx>0.00058</ixx>
-            <ixy>0</ixy>
-            <ixz>0</ixz>
-            <iyy>0.00058</iyy>
-            <iyz>0</iyz>
-            <izz>0.00019</izz>
-          </inertia>
-        </inertial>
-        <collision name='collision'>
-          <geometry>
-            <cylinder>
-              <radius>0.055</radius>
-              <length>0.23</length>
-            </cylinder>
-          </geometry>
-          <max_contacts>10</max_contacts>
-          <surface>
-            <contact>
-              <ode/>
-            </contact>
-            <bounce/>
-            <friction>
-              <torsional>
-                <ode/>
-              </torsional>
-              <ode/>
-            </friction>
-          </surface>
-        </collision>
-        <visual name='visual'>
-          <geometry>
-            <cylinder>
-              <radius>0.055</radius>
-              <length>0.23</length>
-            </cylinder>
-          </geometry>
-          <material>
-            <script>
-              <uri>model://beer/materials/scripts</uri>
-              <uri>model://beer/materials/textures</uri>
-              <name>Beer/Diffuse</name>
-            </script>
-          </material>
-        </visual>
-        <self_collide>0</self_collide>
-        <kinematic>0</kinematic>
-        <gravity>1</gravity>
-      </link>
-      <pose frame=''>37.5955 19.4942 0.777514 -0 -0 -1.1e-05</pose>
     </model>
     <model name='tea_box_0'>
       <link name='link'>
@@ -1768,6 +1534,278 @@
         <gravity>1</gravity>
       </link>
       <pose frame=''>43.5322 22.7756 0.927787 -1.6e-05 -4e-06 4e-06</pose>
+    </model>
+    <model name='cafe_table_clone_3'>
+      <static>1</static>
+      <link name='link'>
+        <collision name='surface'>
+          <pose frame=''>0 0 0.755 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.913 0.913 0.04</size>
+            </box>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <collision name='column'>
+          <pose frame=''>0 0 0.37 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.042 0.042 0.74</size>
+            </box>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <collision name='base'>
+          <pose frame=''>0 0 0.02 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.56 0.56 0.04</size>
+            </box>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>model://cafe_table/meshes/cafe_table.dae</uri>
+              <scale>1 1 1</scale>
+            </mesh>
+          </geometry>
+        </visual>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+      </link>
+      <pose frame=''>39.385 16.2752 0 0 -0 0</pose>
+    </model>
+    <model name='cafe_table_clone_5'>
+      <static>1</static>
+      <link name='link'>
+        <collision name='surface'>
+          <pose frame=''>0 0 0.755 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.913 0.913 0.04</size>
+            </box>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <collision name='column'>
+          <pose frame=''>0 0 0.37 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.042 0.042 0.74</size>
+            </box>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <collision name='base'>
+          <pose frame=''>0 0 0.02 0 -0 0</pose>
+          <geometry>
+            <box>
+              <size>0.56 0.56 0.04</size>
+            </box>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <visual name='visual'>
+          <geometry>
+            <mesh>
+              <uri>model://cafe_table/meshes/cafe_table.dae</uri>
+              <scale>1 1 1</scale>
+            </mesh>
+          </geometry>
+        </visual>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+      </link>
+      <pose frame=''>34.7286 17.3717 0 0 -0 0</pose>
+    </model>
+    <model name='tea_box_0_clone_clone'>
+      <link name='link'>
+        <pose frame=''>0 0 0.075 0 -0 0</pose>
+        <inertial>
+          <mass>0.39</mass>
+          <inertia>
+            <ixx>0.000264062</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.000264062</iyy>
+            <iyz>0</iyz>
+            <izz>0.0001625</izz>
+          </inertia>
+        </inertial>
+        <visual name='visual'>
+          <geometry>
+            <box>
+              <size>0.1 0.1 0.15</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>model://tea_box/materials/scripts</uri>
+              <uri>model://tea_box/materials/textures</uri>
+              <name>tea_pat</name>
+            </script>
+          </material>
+          <cast_shadows>1</cast_shadows>
+          <transparency>0</transparency>
+        </visual>
+        <collision name='collision'>
+          <geometry>
+            <box>
+              <size>0.1 0.1 0.15</size>
+            </box>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+      </link>
+      <pose frame=''>34.7152 17.3258 0.775 -1.6e-05 2e-06 -4.4e-05</pose>
+    </model>
+    <model name='tea_box_0_clone_clone_2_clone'>
+      <link name='link'>
+        <pose frame=''>0 0 0.075 0 -0 0</pose>
+        <inertial>
+          <mass>0.39</mass>
+          <inertia>
+            <ixx>0.000264062</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.000264062</iyy>
+            <iyz>0</iyz>
+            <izz>0.0001625</izz>
+          </inertia>
+        </inertial>
+        <visual name='visual'>
+          <geometry>
+            <box>
+              <size>0.1 0.1 0.15</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>model://tea_box/materials/scripts</uri>
+              <uri>model://tea_box/materials/textures</uri>
+              <name>tea_pat</name>
+            </script>
+          </material>
+          <cast_shadows>1</cast_shadows>
+          <transparency>0</transparency>
+        </visual>
+        <collision name='collision'>
+          <geometry>
+            <box>
+              <size>0.1 0.1 0.15</size>
+            </box>
+          </geometry>
+          <max_contacts>10</max_contacts>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+            <bounce/>
+            <friction>
+              <torsional>
+                <ode/>
+              </torsional>
+              <ode/>
+            </friction>
+          </surface>
+        </collision>
+        <self_collide>0</self_collide>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+      </link>
+      <pose frame=''>39.3947 16.319 0.775 -1.6e-05 2e-06 -4.4e-05</pose>
     </model>
   </world>
 </sdf>

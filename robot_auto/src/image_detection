@@ -7,10 +7,11 @@ import cv2
 import numpy as np
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge
-from std_msgs.msg import Int32MultiArray
+from std_msgs.msg import Float32MultiArray
+from robot_auto.msg import Teabox_detect
 
 # Número mínimo de puntos para "match"
-MIN_MATCH_COUNT = 12
+MIN_MATCH_COUNT = 11
 
 # Número mínimo para que el robot se aproxime al objeto
 MATCH_COUNT_PROXIMITY = 5 
@@ -47,7 +48,9 @@ class Cam(object):
 
 def detect_object(I2):
 
-	detectar = False
+	pixes_array = []
+	box_framed = False
+	possible_box = False
 	msg_pts = [0,0]
 	kp2, des2 = sift.detectAndCompute(I2,None)
 	matches = flann.knnMatch(des1,des2,k=2)
@@ -57,6 +60,7 @@ def detect_object(I2):
 		if m.distance < 0.7*n.distance:
 			good.append(m)
 	keypts_matched = [ kp2[m.trainIdx] for m in good ]
+
 	if len(good)>MIN_MATCH_COUNT:
 
 		src_pts = np.float32([ kp1[m.queryIdx].pt for m in good ]).reshape(-1,1,2)
@@ -68,30 +72,40 @@ def detect_object(I2):
 		dst = cv2.perspectiveTransform(pts,M)
 		cv2.drawKeypoints(I2, keypts_matched, I2, color=(0,255,0), flags=0)
 		img2 = cv2.polylines(I2,[np.int32(dst)],True,255,3, cv2.LINE_AA)
-		detectar = True
+
+		# Se detectó imagen y se enmarcó
+		possible_box = True
+		box_framed = True
+
 
 		# Obtención del punto central  
 		dst_pts_array = dst_pts.reshape(dst_pts.shape[0],2)
 		dst_mean_pt = np.mean(dst_pts_array, axis=0).astype(int)
+		# pixes_array = dst_pts_array.tolist()
 		msg_pts = [int(dst_mean_pt[0]),int(dst_mean_pt[1])]
-		return img2,detectar,msg_pts
+		pixes_array = dst_pts_array.flat
 
-	if len(good) > MATCH_COUNT_PROXIMITY:
+		return img2,possible_box,box_framed,msg_pts,pixes_array
+
+	elif len(good) > MATCH_COUNT_PROXIMITY:
 		dst_pts = np.float32([ kp2[m.trainIdx].pt for m in good ]).reshape(-1,1,2)
-		detectar = True
+		possible_box = True
+		cv2.drawKeypoints(I2, keypts_matched, I2, color=(0,255,0), flags=0)
 		# Obtención del punto central  
 		print("Moving the robot towards the object, due to possible object detection {}/{}".format(len(good), MATCH_COUNT_PROXIMITY)) 
 		dst_pts_array = dst_pts.reshape(dst_pts.shape[0],2)
 		dst_mean_pt = np.mean(dst_pts_array, axis=0).astype(int)
 		msg_pts = [int(dst_mean_pt[0]),int(dst_mean_pt[1])]
-		return I2,detectar,msg_pts
+		pixes_array = dst_pts_array.flat
+		print(pixes_array)
+		return I2,possible_box,box_framed,msg_pts,pixes_array
 
 
 	else:
 		cv2.drawKeypoints(I2, keypts_matched, I2, color=(0,255,0), flags=0)	
 		print( "Not enough matches are found - {}/{}".format(len(good), MIN_MATCH_COUNT) )
 		matchesMask = None
-		return I2,detectar,msg_pts
+		return I2,possible_box,box_framed,msg_pts,pixes_array
 
 
 # =================================
@@ -100,37 +114,49 @@ def detect_object(I2):
 rospy.init_node('camera_node')
 
 # Objeto que se suscribe al tópico de la cámara
-topic_name = "/front_cam/camera/image"
+topic_name = "/camera/rgb/image_raw"
 cam = Cam(topic_name)
 
 # Tópico para publicar una imagen de salida
 # topic_pub = 'image_out'
 # pubimg = rospy.Publisher(topic_pub, Image, queue_size=10)
 topic_pub = 'pixel_reference'
-pubpix = rospy.Publisher(topic_pub,Int32MultiArray,queue_size=10)
+pubpix = rospy.Publisher(topic_pub,Teabox_detect,queue_size=10)
+
+
+# Tópico para publicar píxeles objetivo
+topic_pub_array = 'pixels_values'
+pubpixes = rospy.Publisher(topic_pub_array,Float32MultiArray,queue_size=10)
+pixes_array = Float32MultiArray()
 
 # Frecuencia del bucle principal
 freq = 30
 rate = rospy.Rate(freq)
 
-msg2quadrotor = Int32MultiArray()
-msg2quadrotor.data = [0,0]
+# Creación de mensaje a enviar 
+msg2quadrotor = Teabox_detect()
+msg2quadrotor.pixel = [0,0]
+msg2quadrotor.box_framed = False
+msg2quadrotor.possible_box = False
+
 
 # Bucle principal
 while not rospy.is_shutdown():
 	# Obtener la imagen del tópico de ROS en formato de OpenCV
 	I2 = cam.get_image()
-
+	# print("Flag")
 	if (np.all((I2 == 0)) != True):
-		img,detectar, msg_pts= detect_object(I2)
+		img,possible_box,box_framed,msg_pts,pixes_values = detect_object(I2)
 		cv2.imshow("Imagen Camara de Quadrotor", img)
-		msg2quadrotor.data = msg_pts
-
-			# Esperar al bucle para actualizar
+		msg2quadrotor.pixel = msg_pts
+		msg2quadrotor.box_framed = box_framed
+		msg2quadrotor.possible_box = possible_box
+		# Esperar al bucle para actualizar
+		pubpix.publish(msg2quadrotor)
+		pixes_array.data = pixes_values
+		pubpixes.publish(pixes_array)
 	cv2.waitKey(1)
-	pubpix.publish(msg2quadrotor)
+	rate.sleep()
+cv2.destroyAllWindows()
 			# Opcional: publicar la imagen de salida como tópico de ROS
 			#pubimg.publish(cam.bridge.cv2_to_imgmsg(I))
-	rate.sleep()
-
-cv2.destroyAllWindows()

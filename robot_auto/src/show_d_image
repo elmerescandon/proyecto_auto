@@ -1,0 +1,77 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+
+import rospy
+import numpy as np
+import tf
+from sensor_msgs.msg import Image
+from cv_bridge import CvBridge
+from std_msgs.msg import Float32
+from std_msgs.msg import Float32MultiArray
+import cv2
+
+
+class Cam(object):
+    def __init__(self, topic_name="/camera/depth/image_raw"):
+        self.bridge = CvBridge()
+        self.image = np.zeros((10,10))
+        self.desired_shape = (640,480)
+        self.depthimg = np.zeros((640,480))
+        isub = rospy.Subscriber(topic_name, Image, self.image_callback)
+
+    def image_callback(self, img):
+		self.image = self.bridge.imgmsg_to_cv2(img, "32FC1")
+		cv_image_array = np.array(self.image, dtype = np.dtype('f8'))
+		self.depthimg = cv_image_array
+		# cv2.imshow("Image from my node", self.depthimg)
+		# cv2.waitKey(1)
+    def get_image(self):
+        return self.depthimg
+
+
+class Get_pixes():
+	def __init__(self):
+		self.pixes =[]
+		topico = 'pixels_values'
+		subpub = rospy.Subscriber(topico,Float32MultiArray,self.pixes_callback)
+	def pixes_callback(self,msg):
+		self.pixes = msg.data
+	def get_pixes_array(self):
+		return self.pixes
+
+rospy.init_node('node_rgbd_get')
+img_d = Cam()
+get_pixes = Get_pixes()
+
+
+depth_topic = rospy.Publisher('depth_distance',Float32,queue_size=10)
+depth_distance = Float32()
+
+	
+rate = rospy.Rate(30)
+depth_max = 2 # metros
+depth_min = 0.15
+
+
+
+while not rospy.is_shutdown():
+	depth_of_points = []
+	img = img_d.get_image()
+	pixes = get_pixes.get_pixes_array()
+	for n in range(len(pixes)/2): 
+		w = int(pixes[2*n])
+		h = int(pixes[2*n+1])
+		d_grayscale = img[h][w]
+		if depth_min<d_grayscale<depth_max:
+			depth_of_points.append(d_grayscale)
+
+	distances = np.array(depth_of_points)
+	distance = np.mean(distances, axis=0)
+	if depth_min < distance < depth_max:
+		depth_distance.data = distance	
+		print(distance)
+		depth_topic.publish(depth_distance)
+	rate.sleep()
+
+

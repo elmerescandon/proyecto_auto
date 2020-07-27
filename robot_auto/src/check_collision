@@ -1,0 +1,63 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+from __future__ import print_function
+import rospy
+import numpy as np
+from sensor_msgs.msg import LaserScan
+
+
+# ==================================
+# Clase	obtener mediciones del LIDAR
+# ==================================
+class Sub_lidar():
+	def __init__(self):
+		self.lidar_info = LaserScan()
+		self.lidar_info.angle_min = 0
+		self.lidar_info.angle_max = 0
+		self.lidar_info.range_min = 0
+		self.lidar_info.range_max = 0
+		self.lidar_info.ranges = 1081*[0] 
+		topic = "scan"
+		subtop = rospy.Subscriber(topic,LaserScan,self.callback_lidar)
+	def callback_lidar(self,msg):
+		self.lidar_info = msg
+	def get_lidar_points(self):
+
+		# Points to accept due to collision with stands of the quadrotor
+		lidar_accept = np.loadtxt("lidar_accept.txt")
+		lidar_accept = lidar_accept >= 1.0
+
+		# Initialize values of the sensor
+		a_min = self.lidar_info.angle_min
+		a_max = self.lidar_info.angle_max
+		r_max = self.lidar_info.range_max
+		r_min = self.lidar_info.range_min
+		angles = np.rad2deg(np.linspace(a_min,a_max,len(self.lidar_info.ranges)))
+		ranges = np.array(self.lidar_info.ranges)
+
+		# Filter Accepted Points
+		lidar_pts = ranges[lidar_accept]
+		lidar_angles = angles[lidar_accept]
+		valid_ranges = (lidar_pts < r_max) & (lidar_pts > r_min)
+
+		# Final Points
+		lidar_angles = lidar_angles[valid_ranges]
+		lidar_pts = lidar_pts[valid_ranges]
+		return lidar_angles,lidar_pts
+
+		
+
+# ==================================
+# Inicio del nodo
+# ==================================
+
+rospy.init_node("check_collision")
+
+lidar_datos = Sub_lidar()
+
+
+rate = rospy.Rate(50)
+while not rospy.is_shutdown():
+	a,b = lidar_datos.get_lidar_points()
+	rate.sleep()

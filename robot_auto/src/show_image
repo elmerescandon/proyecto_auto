@@ -28,7 +28,7 @@ class Cam(object):
 rospy.init_node('camera_node')
 
 # Objeto que se suscribe al tópico de la cámara
-topic_name = "/front_cam/camera/image"
+topic_name = "/camera/depth/image_raw"
 cam = Cam(topic_name)
 
 # Tópico para publicar una imagen de salida
@@ -44,7 +44,8 @@ while not rospy.is_shutdown():
     I2 = cam.get_image()
     
     # Mostrar la imagenx
-    cv2.imshow("Imagen Camara Turtlebot3", I2)
+    # cv2.imshow("Imagen Camara Turtlebot3", I2)
+    cv2.imwrite("teabox_img.png",I2)
     print("hola")
     # Esperar al bucle para actualizar
     cv2.waitKey(1)
